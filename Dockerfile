@@ -32,4 +32,5 @@ RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 EXPOSE 9000
 
 # Start PHP-FPM
+USER www-data
 CMD ["php-fpm"]
