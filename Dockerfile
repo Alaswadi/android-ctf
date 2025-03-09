@@ -25,12 +25,15 @@ COPY . .
 
 # Set permissions for storage and bootstrap/cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Create a script to fix permissions
+RUN echo '#!/bin/sh\nchown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache\nchmod -R 775 /var/www/storage /var/www/bootstrap/cache\nexec "$@"' > /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Expose port for PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM
-USER www-data
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["php-fpm"]
