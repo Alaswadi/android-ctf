@@ -16,10 +16,10 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         try {
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('phone', $request->phone)->first();
             $validator = Validator::make($request->all(), [
-                'name'  => 'required|string|min:3|max:255',
-                'email' => 'required|email|unique:users,email',
+                // 'name'  => 'required|string|min:3|max:255',
+                'phone' => 'required|numeric|unique:users,phone',
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -50,8 +50,7 @@ class RegisterController extends Controller
                 $user->save();
             } else {
                 $user = User::create([
-                    'name' => $request->name,
-                    'email'     => $request->email,
+                    'phone'     => $request->phone,
                     'verification_code'  => Hash::make($otp)
                 ]);
             }
@@ -60,7 +59,7 @@ class RegisterController extends Controller
 
             return response()->json([
                 'status' => true,
-                'email' => $request->email,
+                'phone' => $request->phone,
                 'token' => $token,
                 'otp' => $otp,
                 'message' => 'تم إرسال رمز التحقق   ',
